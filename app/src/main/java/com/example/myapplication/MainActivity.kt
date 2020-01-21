@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        fab_time.setOnClickListener {
+        fab_map.setOnClickListener {
             val intent = Intent(applicationContext, MapActivity::class.java)
             startActivity(intent)
         }
