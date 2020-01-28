@@ -13,7 +13,10 @@ class ReminderAdapter(context: Context, private val list: Array<String>) : BaseA
 
     override fun getView(position: Int, p1: View?, parent: ViewGroup?): View {
         val row = inflater.inflate(R.layout.list_view_item, parent, false)
-        row.itemMessage.text = "123"
+
+        row.itemMessage.text = list[position]
+
+        row.itemMessage.text = "hello"
 
         return row
     }
