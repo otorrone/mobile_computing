@@ -1,23 +1,33 @@
 package com.example.myapplication
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import kotlinx.android.synthetic.main.list_view_item.view.*
 
-class ReminderAdapter : BaseAdapter(){
-    override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class ReminderAdapter(context: Context, private val list: List<String>) : BaseAdapter(){
+
+    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    override fun getView(position: Int, p1: View?, parent: ViewGroup?): View {
+        val row = inflater.inflate(R.layout.list_view_item, parent, false)
+        row.itemMessage.text = "123"
     }
 
-    override fun getItem(p0: Int): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getItem(position: Int): Any {
+
+        return list[position]
     }
 
-    override fun getItemId(p0: Int): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getItemId(position: Int): Long {
+
+        return position.toLong()
     }
 
     override fun getCount(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return list.size
     }
 }

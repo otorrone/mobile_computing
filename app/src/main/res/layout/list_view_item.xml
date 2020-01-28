@@ -4,16 +4,16 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/itemMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Trigger Time" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/itemTrigger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView" />
+        android:text="Trigger Time" />
 </LinearLayout>
