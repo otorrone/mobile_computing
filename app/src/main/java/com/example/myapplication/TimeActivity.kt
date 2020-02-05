@@ -68,7 +68,8 @@ class TimeActivity : AppCompatActivity() {
         val intent = Intent(this, ReminderReceiver::class.java)
         intent.putExtra("message", message)
 
-        val pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pending
+        Intent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
 
         val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setExact(AlarmManager.RTC, time, pendingIntent)
