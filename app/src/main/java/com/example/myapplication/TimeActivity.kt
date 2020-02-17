@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_time.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import java.util.*
@@ -17,27 +18,20 @@ class TimeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_time)
 
 
-        time_create.setOnClickListener{
+        time_create.setOnClickListener {
 
             val calendar = GregorianCalendar(
                 datePicker.year,
                 datePicker.month,
                 datePicker.dayOfMonth,
-                datePicker.currentHour,
-                datePicker.curreentMinute
+                timePicker.currentHour,
+                timePicker.currentMinute
             )
 
 
-            val reminder = Reminder (
-                uid = null,
-                time = calendar.timeInMillis,
-                location = null,
-                message = et_message.text.toString()
-            )
+            if ((et_message.text.toString() != "") && (calendar.timeInMillis > System.currentTimeMillis())) {
 
-            if (et_message.text.toString() != "" && (calendar.timeInMillis > System.currentTimeMillis())) {
-
-                val reminder = Reminder (
+                val reminder = Reminder(
                     uid = null,
                     time = calendar.timeInMillis,
                     location = null,
@@ -45,7 +39,7 @@ class TimeActivity : AppCompatActivity() {
                 )
                 doAsync {
 
-                    val db = Rooom.databaseBuilder(
+                    val db = Room.databaseBuilder(
                         applicationContext,
                         AppDatabase::class.java,
                         "Reminders"
@@ -53,14 +47,14 @@ class TimeActivity : AppCompatActivity() {
                     db.reminderDao().insert(reminder)
                     db.close()
 
-                    set.Alarm(reminder.time, reminder.message)
+                    setAlarm(reminder.time!!, reminder.message)
 
                     finish()
                 }
             } else {
                 toast("wrong data")
             }
-
+        }
 
     }
     private fun setAlarm(time: Long, message: String) {
@@ -68,12 +62,11 @@ class TimeActivity : AppCompatActivity() {
         val intent = Intent(this, ReminderReceiver::class.java)
         intent.putExtra("message", message)
 
-        val pending
-        Intent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
 
         val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setExact(AlarmManager.RTC, time, pendingIntent)
 
-        runOnUiThread(toast("Reminder is created"))
+        runOnUiThread{toast("Reminder is created")}
     }
 }

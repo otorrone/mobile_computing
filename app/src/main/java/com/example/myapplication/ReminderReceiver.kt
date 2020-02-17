@@ -3,11 +3,12 @@ package com.example.myapplication
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import org.jetbrains.anko.toast
 
 
 class ReminderReceiver : BroadcastReceiver() {
 
-    Override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(context: Context, intent: Intent) {
 
         val text = intent.getStringExtra("message)")
 
