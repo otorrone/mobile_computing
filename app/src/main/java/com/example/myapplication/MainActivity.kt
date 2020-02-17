@@ -1,12 +1,15 @@
-package com.example.myapplication
+package com.example.mobilecomputing_lecture5
 
-import android.content.Intent
+import android.app.*
+import android.content.*
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.room.Room
+import android.os.Message
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,40 +17,67 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        fab_time.setOnClickListener {
-            val intent = Intent(applicationContext, TimeActivity::class.java)
-            startActivity(intent)
+        val intentFilter = IntentFilter("trigger_toast")
+        val broadcastReceiver = BackgroundTask()
+        registerReceiver(broadcastReceiver, intentFilter)
+
+        toast.setOnClickListener {
+            Toast.makeText(applicationContext, "This is a toast", Toast.LENGTH_SHORT).show()
         }
 
-        fab_map.setOnClickListener {
-            val intent = Intent(applicationContext, MapActivity::class.java)
-            startActivity(intent)
+        notification.setOnClickListener {
+            val intentToast = Intent("trigger_toast")
+            val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intentToast, 0)
+
+            val notification = Notification.Builder(applicationContext)
+                .setContentTitle("Title")
+                .setContentText("Notification example")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_stat_hello)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                val notificationChannel = NotificationChannel("MyNotChannel", "MyApp", NotificationManager.IMPORTANCE_DEFAULT)
+                notificationManager.createNotificationChannel(notificationChannel)
+
+                notification.setChannelId("MyNotChannel")
+            }
+
+            notificationManager.notify(1234, notification.build())
         }
 
-
+        alertdialog.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(this).create()
+            alertDialog.setTitle("Title")
+            alertDialog.setMessage("This is VERY important. Do you agree?")
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes!") { dialog, which ->
+                Toast.makeText(applicationContext, "You said yes!", Toast.LENGTH_SHORT).show()
+            }
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,"No") { _, _ ->
+                Toast.makeText(applicationContext, "Nooooo", Toast.LENGTH_SHORT).show()
+            }
+            alertDialog.show()
         }
-    }
-}
 
-    override fun onResume() {
-        super.onResume()
-    }
-    private fun refreshList() {
-
-        doAsync {
-
-            val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "reminders"). build()
-            val reminders = db.reminderDao().getReminders()
-            db.close()
-
-            uiThread {
-
-                if (reminders.isNotEmpty()){
-                    val adapter = ReminderAdapter(applicationContext, reminders)
-                    list.adapter = adapter
-
-                } else{
-                    toast("No reminders yes")
+        snack.setOnClickListener {
+            val mySnackBar = Snackbar.make(mainContainer, "Hello?", Snackbar.LENGTH_SHORT)
+                .setAction("Hi!") {
+                    Toast.makeText(applicationContext, "Nice to meet you!", Toast.LENGTH_SHORT).show()
                 }
+                .show()
+        }
+    }
+
+    class BackgroundTask : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action.equals("trigger_toast")) {
+                context?.startActivity(Intent(context, MainActivity::class.java))
+                Toast.makeText(context, "Hello from the background", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }
