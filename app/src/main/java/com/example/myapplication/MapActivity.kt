@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.mobilecomputing_lecture5.R
 
 class MapActivity : AppCompatActivity() {
 

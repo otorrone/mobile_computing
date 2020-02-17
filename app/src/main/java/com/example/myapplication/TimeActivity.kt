@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.room.Room
+import com.example.mobilecomputing_lecture5.R
 import kotlinx.android.synthetic.main.activity_time.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
