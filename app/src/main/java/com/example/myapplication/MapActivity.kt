@@ -37,7 +37,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
         (map_fragment as SupportMapFragment).getMapAsync(this)
         map_create.setOnClickListener {
 
-            val reminderText-reminder_message.text.toString()
+            val reminderText = reminder_message.text.toString()
 
             if(reminderText.isEmpty()){
                 toast("Please provide reminder text")
@@ -105,6 +105,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
 
                 val marker=addMarker(MarkerOptions().position(location).snippet(title).title(city))
                 marker.showInfoWindow()
+
+                selectedLocation=location
             }
         }
 }
