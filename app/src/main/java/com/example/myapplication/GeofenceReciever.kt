@@ -3,7 +3,7 @@ package com.example.myapplication
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.myapp1.MainActivity
+//import com.example.myapp1.MainActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 

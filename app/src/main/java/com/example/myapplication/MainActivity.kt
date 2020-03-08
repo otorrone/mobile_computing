@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.Button
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.room.Room
 import com.example.myapplication.*
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             if (!fabOpened){
                 fabOpened = true
                 fab_time.animate().translationY(-resources.getDimension(R.dimen.standard_66))
+                fab_map.animate().translationY(-resources.getDimension(R.dimen.standard_116))
                 fab_map.animate().translationY(-resources.getDimension(R.dimen.standard_116))
 
             } else {
@@ -90,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         val CHANNEL_ID="REMINDER_CHANNEL_1D"
         val NotificationID=1567
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun showNotification(context: Context, message:String){
             var notificationBuilder=NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.clock)
@@ -97,12 +100,25 @@ class MainActivity : AppCompatActivity() {
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-            var notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.0) {
-                val channel = NotificationChannel(CHANNEL_ID, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT).apply { description=context.getString(R.string.app_name) }
-            }
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.0) {
+            //    val channel = NotificationChannel(CHANNEL_ID, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT).apply { description=context.getString(R.string.app_name) }
+            //}
+
+
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.0) {
+                //val channel = NotificationChannel(
+                    //CHANNEL_ID,
+                    //"Reminder",
+                    //NotificationManager.IMPORTANCE_DEFAULT
+                //).apply {
+                    //description = "Reminder"
+                //}
+                //notificationManager.createNotificationChannel(channel)
+            //}
+            //notificationManager.notify(NotificationID, notificationBuilder.build())
             val notification = NotificationID+ Random(NotificationID).nextInt(1, 30)
             notificationManager.notify(notification,notificationBuilder.build())
 

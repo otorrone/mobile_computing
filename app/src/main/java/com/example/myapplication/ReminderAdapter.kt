@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.example.mobilecomputing_lecture5.R
+//import com.example.mobilecomputing_lecture5.R
 import kotlinx.android.synthetic.main.list_view_item.view.*
 import java.sql.Time
 import java.text.SimpleDateFormat
