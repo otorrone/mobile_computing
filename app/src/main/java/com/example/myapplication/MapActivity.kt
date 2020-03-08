@@ -1,16 +1,17 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.room.Room
+import com.google.android.gms.location.*
 //import com.example.mobilecomputing_lecture5.R
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -29,6 +30,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
     lateinit var gMap:GoogleMap
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var selectedLocation:LatLng
+
+    val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
+    val GEOFENCE_RADIUS = 500
+    val GEOFENCE_EXPIRATION = 120*24*60*60*1000
+    val GEOFENCE_DWELL_DELAY = 2*60*1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +74,47 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
         }
     }
 
+    private fun CreateGeofence(
+        selectedLocation:LatLng,
+        reminder: Reminder,
+        geofencingClient: GeofencingClient
+    ){
+        val geofence = Geofence.Builder().setRequestId(GEOFENCE_ID).setCircularRegion(
+            selectedLocation.latitude,
+            selectedLocation.longitude,
+            GEOFENCE_RADIUS.toFloat()
+        ).setExpirationDuration(GEOFENCE_EXPIRATION.toLong()).setTransitionTypes(
+            Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL
+        ).setLoiteringDelay(GEOFENCE_DWELL_DELAY).build()
+        val geofenceRequest = GeofencingRequest.Builder().setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER).addGeofence(geofence).build()
+
+
+        val intent = Intent(this, GeofenceReciever::class.java ).putExtra("uid", reminder.uid).putExtra("message", reminder.message).putExtra("location", reminder.location)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode==123){
+            if (grantResults.isEmpty() && (grantResults[0] == PackageManager.PERMISSION_DENIED ||
+                        grantResults[1] == PackageManager.PERMISSION_DENIED
+                        )
+            ) {
+                toast("The reminder needs all the permissions to function")
+            }
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                if (grantResults.isEmpty() && (grantResults[2] == PackageManager.PERMISSION_DENIED)){
+                    toast("The reminder needs all the permissions to function")
+                }
+            }
+        }
+
+    }
+
     override fun onMapReady(map: GoogleMap?){
         gMap=map ?: return
         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || (ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)){
@@ -83,7 +130,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
                 }
             }
         }else{
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION), 123)
+            var permission = mutableListOf<String>()
+            permission.add(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            permission.add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                permission.add(android.Manifest.permission.ACCESS_BACKROUND_LOCATION)
+            }
+            ActivityCompat.requestPermissions(this, permission.toTypedArray(), 123)
         }
 
         gMap.setOnMapClickListener { location:LatLng->
