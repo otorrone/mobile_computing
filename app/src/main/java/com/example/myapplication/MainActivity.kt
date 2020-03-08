@@ -1,5 +1,7 @@
 
-package com.example.myapp1
+
+package com.example.myapplication
+
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var fabOpened = false
+
         fab.setOnClickListener {
             if (!fabOpened){
                 fabOpened = true

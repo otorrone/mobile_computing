@@ -1,7 +1,9 @@
 package com.example.myapplication
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Geocoder
 import android.location.Location
 import android.os.Build
@@ -19,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_map.*
 //import mobile_computing.R
 import org.jetbrains.anko.doAsync
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.jetbrains.anko.toast
@@ -31,16 +34,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var selectedLocation:LatLng
 
+    lateinit var geofencingClient: GeofencingClient
+
     val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
     val GEOFENCE_RADIUS = 500
     val GEOFENCE_EXPIRATION = 120*24*60*60*1000
     val GEOFENCE_DWELL_DELAY = 2*60*1000
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
         (map_fragment as SupportMapFragment).getMapAsync(this)
+        geofencingClient=LocationServices.getGeofencingClient(this)
+
         map_create.setOnClickListener {
 
             val reminderText = reminder_message.text.toString()
@@ -65,8 +73,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
                 val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "reminders")
                     .build()
 
-                db.reminderDao().insert(reminder)
+                val uid=db.reminderDao().insert(reminder).toInt()
+                reminder.uid=uid
+
                 db.close()
+                createGeofence(selectedLocation, reminder, geofencingClient)
             }
 
             finish()
@@ -74,7 +85,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
         }
     }
 
-    private fun CreateGeofence(
+    private fun createGeofence(
         selectedLocation:LatLng,
         reminder: Reminder,
         geofencingClient: GeofencingClient
@@ -90,6 +101,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
 
 
         val intent = Intent(this, GeofenceReciever::class.java ).putExtra("uid", reminder.uid).putExtra("message", reminder.message).putExtra("location", reminder.location)
+
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        geofencingClient.addGeofences(geofenceRequest, pendingIntent)
+
+
     }
 
     override fun onRequestPermissionsResult(
@@ -159,7 +176,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
 
                 val marker=addMarker(MarkerOptions().position(location).snippet(title).title(city))
                 marker.showInfoWindow()
-
+                addCircle(CircleOptions().center(location).strokeColor(Color.argb(50,70,70,70)).fillColor(Color.argb(100, 150, 150 ,150))
+                )
                 selectedLocation=location
             }
         }
