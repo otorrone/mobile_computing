@@ -8,9 +8,10 @@ import android.os.Bundle
 import android.os.Message
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.example.myapplication.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import mobile_computing.R
+//import mobile_computing.R
 
 
 class MainActivity : AppCompatActivity() {
