@@ -8,14 +8,14 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.room.Room
-import com.example.mobilecomputing_lecture5.R
+//import com.example.mobilecomputing_lecture5.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import kotlinx.android.synthetic.main.activity_map.*
-import mobile_computing.R
+//import mobile_computing.R
 import org.jetbrains.anko.doAsync
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
@@ -51,8 +51,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
             val reminder = Reminder(
                 uid = null,
                 time = null,
-                location = "65.059640\n25.466246",
-                message = "test"
+                location = String.format("%.3f.%.3f",selectedLocation.latitude,selectedLocation.latitude),//"65.059640\n25.466246",
+                message = reminderText
             )
 
             doAsync {
