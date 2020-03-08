@@ -10,6 +10,7 @@ class ReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
+        
         val text = intent.getStringExtra("message)")
 
         context.toast(text!!)
