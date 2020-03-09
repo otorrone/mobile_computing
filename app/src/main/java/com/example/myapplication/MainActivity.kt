@@ -89,39 +89,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
     companion object {
-        val CHANNEL_ID="REMINDER_CHANNEL_1D"
-        val NotificationID=1567
+        val CHANNEL_ID="REMINDER_CHANNEL_ID"
+        var NotificationID = 1567
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun showNotification(context: Context, message:String){
-            var notificationBuilder=NotificationCompat.Builder(context, CHANNEL_ID)
+        fun showNotification(context: Context, message: String){
+            var notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.clock)
-                .setContentTitle("Reminder").setContentText(message)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(message).setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            var notificationManager=context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val notificationManager =
-                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.0) {
-            //    val channel = NotificationChannel(CHANNEL_ID, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT).apply { description=context.getString(R.string.app_name) }
-            //}
-
-
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.0) {
-                //val channel = NotificationChannel(
-                    //CHANNEL_ID,
-                    //"Reminder",
-                    //NotificationManager.IMPORTANCE_DEFAULT
-                //).apply {
-                    //description = "Reminder"
-                //}
-                //notificationManager.createNotificationChannel(channel)
-            //}
-            //notificationManager.notify(NotificationID, notificationBuilder.build())
-            val notification = NotificationID+ Random(NotificationID).nextInt(1, 30)
-            notificationManager.notify(notification,notificationBuilder.build())
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    context.getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply{description = context.getString(R.string.app_name)}
+                notificationManager.createNotificationChannel(channel)
             }
+
+            val notification= NotificationID+ Random(NotificationID).nextInt(1,30)
+            notificationManager.notify(notification,notificationBuilder.build())
         }
     }
+}

@@ -123,11 +123,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
             }
 
 
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            //    if (grantResults.isEmpty() && (grantResults[2] == PackageManager.PERMISSION_DENIED)){
-            //        toast("The reminder needs all the permissions to function")
-            //    }
-            //}
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                if(grantResults.isNotEmpty()&& (grantResults[2]==PackageManager.PERMISSION_DENIED)){
+                    toast("The reminder needs all the permissions to function")
+                }
+            }
         }
 
     }
@@ -151,10 +151,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback{
             permission.add(android.Manifest.permission.ACCESS_FINE_LOCATION)
             permission.add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
 
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            //    permission.add(android.Manifest.permission.ACCESS_BACKROUND_LOCATION)
-            //}
-            ActivityCompat.requestPermissions(this, permission.toTypedArray(), 123)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                permission.add(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            }
+            ActivityCompat.requestPermissions(this, permission.toTypedArray(),123)
         }
 
         gMap.setOnMapClickListener { location:LatLng->

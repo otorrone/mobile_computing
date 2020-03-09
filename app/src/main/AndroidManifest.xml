@@ -5,7 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -27,12 +27,6 @@
         </activity>
         <activity android:name=".MapActivity" />
         <activity android:name=".TimeActivity" />
-        <receiver
-            android:name=".MainActivity$BackgroundTask" android:exported="true">
-            <intent-filter>
-                <action android:name="trigger_toast" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".ReminderReceiver" />
         <receiver android:name=".GeofenceReciever" />
         <meta-data
